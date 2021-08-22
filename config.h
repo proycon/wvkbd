@@ -1,25 +1,25 @@
 /* constants */
 
 /* how tall the keyboard should be */
-#define KBD_PIXEL_HEIGHT 155
+#define KBD_PIXEL_HEIGHT 200
 
 /* if your layout leaves an empty margin, increase this to fix it */
-#define KBD_PIXEL_OVERSCAN_WIDTH 0
+#define KBD_PIXEL_OVERSCAN_WIDTH 5
 
 /* rows for each layout */
-#define KBD_ROWS 4
+#define KBD_ROWS 5
 
 /* columns for each layout (maximum keys per row) */
-#define KBD_COLS 10
+#define KBD_COLS 13
 
 /* spacing between keys */
-#define KBD_KEY_BORDER 1
+#define KBD_KEY_BORDER 2
 
 #include "keyboard.h"
 
 /* font (see `man fonts-conf` for instructions) */
 static const char *fc_font_pattern =
-  "monospace:size=14:antialias=true:hinting=true";
+  "FiraMono Nerd Font:size=16:antialias=true:hinting=true";
 
 /* layout declarations */
 enum layout_names {
@@ -78,6 +78,21 @@ static struct kbd keyboard = {
  * - layout: layout to switch to when key is pressed
  */
 static struct key keys_basic[] = {
+  {"Esc", "Esc", 1, Code, KEY_ESC},
+  {"1", "!", 1, Code, KEY_1},
+  {"2", "@", 1, Code, KEY_2},
+  {"3", "#", 1, Code, KEY_3},
+  {"4", "$", 1, Code, KEY_4},
+  {"5", "%", 1, Code, KEY_5},
+  {"6", "^", 1, Code, KEY_6},
+  {"7", "&", 1, Code, KEY_7},
+  {"8", "*", 1, Code, KEY_8},
+  {"9", "(", 1, Code, KEY_9},
+  {"0", ")", 1, Code, KEY_0},
+  {"-", "_", 1, Code, KEY_MINUS},
+  {"=", "+", 1, Code, KEY_EQUAL},
+ 
+  {"Tab", "Tab", 1, Code, KEY_TAB},
   {"q", "Q", 1, Code, KEY_Q},
   {"w", "W", 1, Code, KEY_W},
   {"e", "E", 1, Code, KEY_E},
@@ -88,7 +103,10 @@ static struct key keys_basic[] = {
   {"i", "I", 1, Code, KEY_I},
   {"o", "O", 1, Code, KEY_O},
   {"p", "P", 1, Code, KEY_P},
+  {"\\", "|", 1, Code, KEY_BACKSLASH},
+  {"Bk", "Bk", 1, Code, KEY_BACKSPACE},
 
+  {"Shft", "Shft", 2, Mod, Shift},
   {"a", "A", 1, Code, KEY_A},
   {"s", "S", 1, Code, KEY_S},
   {"d", "D", 1, Code, KEY_D},
@@ -99,7 +117,9 @@ static struct key keys_basic[] = {
   {"k", "K", 1, Code, KEY_K},
   {"l", "L", 1, Code, KEY_L},
   {";", ":", 1, Code, KEY_SEMICOLON},
-
+  {"'", "\"", 1, Code, KEY_APOSTROPHE},
+ 
+  {"Ctrl", "Ctrl", 2, Mod, Ctrl},
   {"z", "Z", 1, Code, KEY_Z},
   {"x", "X", 1, Code, KEY_X},
   {"c", "C", 1, Code, KEY_C},
@@ -107,17 +127,20 @@ static struct key keys_basic[] = {
   {"b", "B", 1, Code, KEY_B},
   {"n", "N", 1, Code, KEY_N},
   {"m", "M", 1, Code, KEY_M},
-  {"Tab", "Tab", 1, Code, KEY_TAB},
-  {"Bk", "Bk", 1, Code, KEY_BACKSPACE},
-  {"Ret", "Ret", 1, Code, KEY_ENTER},
-
-  {"Sft", "Sft", 1, Mod, Shift},
-  {"Sp", "Sp", 1, Mod, Super},
+  {",", "<", 1, Code, KEY_COMMA},
+  {".", ">", 1, Code, KEY_DOT},
+  {"/", "?", 1, Code, KEY_SLASH},
+  {"abc", "abc", 1, Layout, 0, &layouts[Special]},
+ 
+  {"Sup", "Sup", 2, Mod, Super},
   {"Alt", "Alt", 1, Mod, AltGr},
-  {"", "", 3, Code, KEY_SPACE},
-  {"Esc", "Esc", 1, Code, KEY_ESC},
-  {"Ctl", "Ctl", 1, Mod, Ctrl},
-  {"Sm", "Sm", 2, Layout, 0, &layouts[Special]},
+  {"↑", "↑", 1, Code, KEY_UP},
+  {"↓", "↓", 1, Code, KEY_DOWN},
+  {"", "", 4, Code, KEY_SPACE},
+  {"←", "←", 1, Code, KEY_LEFT},
+  {"→", "→", 1, Code, KEY_RIGHT},
+  {"Entr", "Entr", 2, Code, KEY_ENTER},
+
 
   /* end of layout */
   {"", "", 0, Last},
@@ -158,7 +181,7 @@ static struct key keys_special[] = {
   {"Ret", "Ret", 1, Code, KEY_ENTER},
   {"Bk", "Bk", 1, Code, KEY_BACKSPACE},
   {"", "", 3, Code, KEY_SPACE},
-  {"Bsc", "Bsc", 2, Layout, 0, &layouts[Basic]},
+  {"abc", "abc", 2, Layout, 0, &layouts[Basic]},
 
   /* end of layout */
   {"", "", 0, Last},
