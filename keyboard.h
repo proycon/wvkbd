@@ -25,6 +25,7 @@ enum key_modifier_type {
 	Ctrl = 4,
 	Super = 64,
 	AltGr = 128,
+	Extra = 256,
 };
 
 struct clr_scheme {

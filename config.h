@@ -23,15 +23,17 @@ enum layout_names {
 	Basic = 0,
 	Special,
 	Simple,
+	ExtraA,
 	NumLayouts,
 };
 
-static struct key keys_basic[], keys_special[], keys_simple[];
+static struct key keys_basic[], keys_special[], keys_simple[], keys_extra_a[];
 
 static struct layout layouts[NumLayouts] = {
   [Basic] = {keys_basic},
   [Special] = {keys_special},
   [Simple] = {keys_simple},
+  [ExtraA] = {keys_extra_a},
 };
 
 /* keyboard settings */
@@ -86,7 +88,7 @@ static struct key keys_basic[] = {
   {"'", "\"", 1.0, Code, KEY_APOSTROPHE},
   {"/", "?", 1.0, Code, KEY_SLASH},
   {";", ":", 1.0, Code, KEY_SEMICOLON},
-  {"`", "~", 1.0, Code, KEY_GRAVE},
+  {"Ct", "Ct", 1.0, Mod, Ctrl},
   {"", "", 0.0, EndRow},
 
   {"1", "!", 1.0, Code, KEY_1},
@@ -116,7 +118,7 @@ static struct key keys_basic[] = {
   {"p", "P", 1.0, Code, KEY_P},
   {"", "", 0.0, EndRow},
 
-  {"Ct", "Ct", 1.0, Mod, Ctrl},
+  {"Ex", "Ex", 1.0, Mod, Extra},
   {"a", "A", 1.0, Code, KEY_A},
   {"s", "S", 1.0, Code, KEY_S},
   {"d", "D", 1.0, Code, KEY_D},
@@ -272,3 +274,7 @@ static struct key keys_simple[] = {
   {"", "", 0.0, Last},
 };
 
+static struct key keys_extra_a[] = {
+  {"á", "Á", 1.0, Code, KEY_GRAVE},
+  {"", "", 0.0, Last},
+};
