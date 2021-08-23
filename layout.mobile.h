@@ -16,30 +16,33 @@
 
 /* font (see `man fonts-conf` for instructions) */
 static const char *fc_font_pattern =
-  "FiraMono Nerd Font:size=16:antialias=true:hinting=true";
+  "Monospace:size=16:antialias=true:hinting=true";
 
 /* layout declarations */
 enum layout_names {
-	Basic = 0,
+	Full = 0,
 	Special,
 	Simple,
-	ExtraA,
+	ComposeA,
 	NumLayouts,
 };
 
-static struct key keys_basic[], keys_special[], keys_simple[], keys_extra_a[];
+static struct key keys_full[], keys_special[], keys_simple[], keys_compose_a[];
 
 static struct layout layouts[NumLayouts] = {
-  [Basic] = {keys_basic},
+  [Full] = {keys_full},
   [Special] = {keys_special},
   [Simple] = {keys_simple},
-  [ExtraA] = {keys_extra_a},
+  [ComposeA] = {keys_compose_a},
 };
+
+const enum layout_names DefaultLayout = Full;
+
 
 /* keyboard settings */
 static struct kbd keyboard = {
   /* default layout */
-  .layout = &layouts[Basic],
+  .layout = &layouts[DefaultLayout],
   .scheme =
     {
       /* colors */
@@ -78,17 +81,17 @@ static struct kbd keyboard = {
  *
  * - layout: layout to switch to when key is pressed
  */
-static struct key keys_basic[] = {
+static struct key keys_full[] = {
   {"Esc", "Esc", 1.0, Code, KEY_ESC},
+  {"Ctr", "Ctr", 1.0, Mod, Ctrl},
   {"Tab", "Tab", 1.0, Code, KEY_TAB},
   {"↑", "↑", 1.0, Code, KEY_UP},
   {"↓", "↓", 1.0, Code, KEY_DOWN},
   {"←", "←", 1.0, Code, KEY_LEFT},
   {"→", "→", 1.0, Code, KEY_RIGHT},
   {"'", "\"", 1.0, Code, KEY_APOSTROPHE},
-  {"/", "?", 1.0, Code, KEY_SLASH},
   {";", ":", 1.0, Code, KEY_SEMICOLON},
-  {"Ct", "Ct", 1.0, Mod, Ctrl},
+  {"/", "?", 1.0, Code, KEY_SLASH},
   {"", "", 0.0, EndRow},
 
   {"1", "!", 1.0, Code, KEY_1},
@@ -118,8 +121,8 @@ static struct key keys_basic[] = {
   {"p", "P", 1.0, Code, KEY_P},
   {"", "", 0.0, EndRow},
 
-  {"Ex", "Ex", 1.0, Mod, Extra},
-  {"a", "A", 1.0, Code, KEY_A},
+  {"Cmp", "Cmp", 1.0, Compose},
+  {"a", "A", 1.0, Code, KEY_A, &layouts[ComposeA]},
   {"s", "S", 1.0, Code, KEY_S},
   {"d", "D", 1.0, Code, KEY_D},
   {"f", "F", 1.0, Code, KEY_F},
@@ -143,10 +146,10 @@ static struct key keys_basic[] = {
   {"", "", 0.0, EndRow},
 
   {"Sym", "Sym", 1.0, Layout, 0, &layouts[Special]},
-  {"Alt", "Alt", 1.0, Mod, AltGr},
-  {",", "<", 1.0, Code, KEY_COMMA},
+  {"Alt", "Alt", 1.0, Mod, Alt},
+  {",", "'", 1.0, Code, KEY_COMMA},
   {"", "", 4.0, Code, KEY_SPACE},
-  {".", ">", 1.0, Code, KEY_DOT},
+  {".", "?", 1.0, Code, KEY_DOT},
   {"Entr", "Entr", 2.0, Code, KEY_ENTER},
 
 
@@ -156,6 +159,7 @@ static struct key keys_basic[] = {
 
 static struct key keys_special[] = {
   {"Esc", "Esc", 1.0, Code, KEY_ESC},
+  {"Ctr", "Ctr", 1.0, Mod, Ctrl},
   {"Tab", "Tab", 1.0, Code, KEY_TAB},
   {"↑", "↑", 1.0, Code, KEY_UP},
   {"↓", "↓", 1.0, Code, KEY_DOWN},
@@ -179,19 +183,8 @@ static struct key keys_special[] = {
   {"0", ")", 1.0, Code, KEY_0},
   {"", "", 0.0, EndRow},
 
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 0.0, EndRow},
-
-  {"Ct", "Ct", 2.0, Mod, Ctrl},
+  {"Caps", "Caps", 1.0, Mod, CapsLock},
+  {"Sup", "Sup", 1.0, Mod, Super},
   {"`", "~", 1.0, Code, KEY_GRAVE},
   {"'", "\"", 1.0, Code, KEY_APOSTROPHE},
   {"-", "_", 1.0, Code, KEY_MINUS},
@@ -205,19 +198,19 @@ static struct key keys_special[] = {
   {"⇧", "⇧", 2.0, Mod, Shift},
   {";", ":", 1.0, Code, KEY_SEMICOLON},
   {"/", "?", 1.0, Code, KEY_SLASH},
+  {"<", "«", 1.0, CodeMod, KEY_COMMA, 0, AltGr},
+  {">", "»", 1.0, CodeMod, KEY_DOT, 0, AltGr},
+  {"¡", "¿", 1.0, Code, KEY_MENU},
   {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
-  {"", "", 1.0, Pad},
+  {"AGr", "AGr", 1.0, Mod, AltGr},
   {"⌫", "⌫", 1.0, Code, KEY_BACKSPACE},
   {"", "", 0.0, EndRow},
 
-  {"Abc", "Abc", 1.0, Layout, 0, &layouts[Simple]},
-  {"Alt", "Alt", 1.0, Mod, AltGr},
-  {",", "<", 1.0, Code, KEY_COMMA},
+  {"Abc", "Abc", 1.0, Layout, 0,  &layouts[(DefaultLayout == Simple) ? Full : Simple] },
+  {"Alt", "Alt", 1.0, Mod, Alt},
+  {",", "'", 1.0, Code, KEY_COMMA},
   {"", "", 4.0, Code, KEY_SPACE},
-  {".", ">", 1.0, Code, KEY_DOT},
+  {".", "?", 1.0, Code, KEY_DOT},
   {"Entr", "Entr", 2.0, Code, KEY_ENTER},
 
   /* end of layout */
@@ -238,8 +231,8 @@ static struct key keys_simple[] = {
   {"p", "P", 1.0, Code, KEY_P},
   {"", "", 0.0, EndRow},
 
-  {"Ct", "Ct", 1.0, Mod, Ctrl},
-  {"a", "A", 1.0, Code, KEY_A},
+  {"Cmp", "Cmp", 1.0, Compose},
+  {"a", "A", 1.0, Code, KEY_A, &layouts[ComposeA]},
   {"s", "S", 1.0, Code, KEY_S},
   {"d", "D", 1.0, Code, KEY_D},
   {"f", "F", 1.0, Code, KEY_F},
@@ -262,11 +255,11 @@ static struct key keys_simple[] = {
   {"⌫", "⌫", 1.5, Code, KEY_BACKSPACE},
   {"", "", 0.0, EndRow},
 
-  {"Abc", "Abc", 1.0, Layout, 0, &layouts[Basic]},
-  {"Alt", "Alt", 1.0, Mod, AltGr},
-  {",", "<", 1.0, Code, KEY_COMMA},
+  {"Abc", "Abc", 1.0, Layout, 0,  &layouts[(DefaultLayout == Simple) ? Special : DefaultLayout] },
+  {"Ctr", "Ctr", 1.0, Mod, Ctrl},
+  {",", "'", 1.0, Code, KEY_COMMA},
   {"", "", 4.0, Code, KEY_SPACE},
-  {".", ">", 1.0, Code, KEY_DOT},
+  {".", "?", 1.0, Code, KEY_DOT},
   {"Entr", "Entr", 2.0, Code, KEY_ENTER},
 
 
@@ -274,7 +267,21 @@ static struct key keys_simple[] = {
   {"", "", 0.0, Last},
 };
 
-static struct key keys_extra_a[] = {
-  {"á", "Á", 1.0, Code, KEY_GRAVE},
+static struct key keys_compose_a[] = {
+  {"á", "Á", 1.0, Copy, 0x00E1, 0, 0x00C1},
+  {"à", "À", 1.0, Copy, 0x00E0, 0, 0x00C0},
+  {"", "", 8.0, Pad},
+  {"", "", 0.0, EndRow},
+  {"", "", 0.0, EndRow},
+  {"⇧", "⇧", 1.5, Mod, Shift},
+  {"", "", 7, Pad},
+  {"⌫", "⌫", 1.5, Code, KEY_BACKSPACE},
+  {"", "", 0.0, EndRow},
+  {"Abc", "Abc", 1.0, Layout, 0, &layouts[DefaultLayout]},
+  {"Ctr", "Ctr", 1.0, Mod, Ctrl},
+  {",", "'", 1.0, Code, KEY_COMMA},
+  {"", "", 4.0, Code, KEY_SPACE},
+  {".", "?", 1.0, Code, KEY_DOT},
+  {"Enter", "Enter", 2.0, Code, KEY_ENTER},
   {"", "", 0.0, Last},
 };
