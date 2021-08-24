@@ -82,8 +82,8 @@ struct kbd {
 	struct layout *prevlayout;
 	size_t layer_index;
 
-	enum layout_ids *layers;
-	struct layout **layouts;
+	struct layout *layouts;
+	enum layout_id *layers;
 
 	struct drwsurf *surf;
 	struct zwp_virtual_keyboard_v1 *vkbd;
@@ -93,7 +93,7 @@ static inline void draw_inset(struct drwsurf *d, uint32_t x, uint32_t y,
                               uint32_t width, uint32_t height, uint32_t border,
                               uint32_t color);
 
-static void kbd_init(struct kbd *kb, char * layer_names_list);
+static void kbd_init(struct kbd *kb, struct layout * layouts, char * layer_names_list);
 static void kbd_init_layout(struct layout *l, uint32_t width, uint32_t height);
 static struct key *kbd_get_key(struct kbd *kb, uint32_t x, uint32_t y);
 static void kbd_unpress_key(struct kbd *kb, uint32_t time);
@@ -134,16 +134,17 @@ kbd_get_rows(struct layout *l) {
 }
 
 
-void kbd_init(struct kbd *kb, char * layer_names_list) {
+void kbd_init(struct kbd *kb, struct layout * layouts, char * layer_names_list) {
 	char *s;
 	int i;
 	bool found;
 
+	kb->layouts = layouts;
 	kb->layer_index = 0;
 
 	if (layer_names_list) {
 		uint8_t numlayers = 0;
-		kb->layers = malloc(MAX_LAYERS * sizeof(enum layout_ids));
+		kb->layers = malloc(MAX_LAYERS * sizeof(enum layout_id));
 		s = strtok(layer_names_list, ",");
 		while (s != NULL) {
 			if (numlayers + 1 == MAX_LAYERS) {
@@ -152,7 +153,7 @@ void kbd_init(struct kbd *kb, char * layer_names_list) {
 			}
 			found = false;
 			for (i = 0; i < NumLayouts; i++) {
-				if (strcmp(kb->layouts[i]->name, s) == 0) {
+				if (strcmp(kb->layouts[i].name, s) == 0) {
 					fprintf(stderr, "Adding layer %s\n", s);
 					kb->layers[numlayers] = i;
 					found = true;
@@ -173,7 +174,15 @@ void kbd_init(struct kbd *kb, char * layer_names_list) {
 		}
 	}
 
-	kb->layout = kb->layouts[kb->layer_index];
+	fprintf(stderr, "Initializing keyboard\n");
+	i = 0;
+	enum layout_id lid = kb->layers[0];
+	while (lid != NumLayouts) {
+		lid = kb->layers[++i];
+	}
+	fprintf(stderr, "Found %d layers\n",i);
+
+	kb->layout = &kb->layouts[kb->layer_index];
 
 	/* upload keymap */
 	create_and_upload_keymap(kb->layout->keymap_name, 0, 0);
@@ -182,7 +191,7 @@ void kbd_init(struct kbd *kb, char * layer_names_list) {
 void
 kbd_init_layout(struct layout *l, uint32_t width, uint32_t height) {
 	uint32_t x = 0, y = 0;
-	fprintf(stderr, "Init layout\n");
+	fprintf(stderr, "Init layout %s\n", l->name);
 	uint8_t rows = kbd_get_rows(l);
 
 	l->keyheight = height / rows;
@@ -197,8 +206,6 @@ kbd_init_layout(struct layout *l, uint32_t width, uint32_t height) {
 		} else if (k->width > 0) {
 			k->x = x;
 			k->y = y;
-			fprintf(stderr, "(%d/%f)*%f -> %s\n", width, rowlength, k->width,
-			        k->label);
 			k->w = ((double)width / rowlength) * k->width;
 			x += k->w;
 		}
@@ -331,7 +338,7 @@ kbd_press_key(struct kbd *kb, struct key *k, uint32_t time) {
 		if (kb->layers[kb->layer_index] == NumLayouts) {
 			kb->layer_index = 0;
 		}
-		kbd_switch_layout(kb, kb->layouts[kb->layer_index]);
+		kbd_switch_layout(kb, &kb->layouts[kb->layer_index]);
 		break;
 	case BackLayer:
 		//switch to the previously active layout
@@ -401,8 +408,9 @@ void
 kbd_draw_key(struct kbd *kb, struct key *k, bool pressed) {
 	struct drwsurf *d = kb->surf;
 	const char *label = (kb->mods & Shift) ? k->shift_label : k->label;
+	fprintf(stderr, "Debug +%d+%d %dx%d\n", k->x, k->y, k->w, k->h),
 	fprintf(stderr, "Draw key +%d+%d %dx%d -> %s\n", k->x, k->y, k->w, k->h,
-	        k->label);
+	        label);
 	struct clr_scheme *scheme = (k->scheme == 0) ? &(kb->scheme) : &(kb->scheme1);
 	Color *fill = pressed ? &scheme->high : &scheme->fg;
 	draw_inset(d, k->x, k->y, k->w, k->h, KBD_KEY_BORDER, fill->color);

@@ -10,7 +10,7 @@
 #define KBD_KEY_BORDER 2
 
 /* layout declarations */
-enum layout_ids {
+enum layout_id {
 	Full = 0,
 	Special,
 	Simple,
@@ -58,7 +58,7 @@ enum layout_ids {
 };
 
 /* layers is an ordered list of layouts, used to cycle through */
-static enum layout_ids layers[] = {
+static enum layout_id layers[] = {
 	Full, //First layout is the default layout on startup
 	Special,
 	Simple,
@@ -138,7 +138,6 @@ static struct layout layouts[NumLayouts] = {
 /* keyboard settings */
 static struct kbd keyboard = {
   /* default layout */
-  .layouts = &layouts,
   .layers = &layers,
   .layer_index = 0,
   .scheme =
