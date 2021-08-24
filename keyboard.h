@@ -139,7 +139,14 @@ void kbd_init(struct kbd *kb, struct layout * layouts, char * layer_names_list) 
 	int i;
 	bool found;
 
+	fprintf(stderr, "Initializing keyboard\n");
+
 	kb->layouts = layouts;
+
+	struct layout * l = layouts;
+	for (i = 0; i < NumLayouts - 1; i++);
+	fprintf(stderr, "Found %d layers\n",i);
+
 	kb->layer_index = 0;
 
 	if (layer_names_list) {
@@ -152,29 +159,27 @@ void kbd_init(struct kbd *kb, struct layout * layouts, char * layer_names_list) 
 				exit(3);
 			}
 			found = false;
-			for (i = 0; i < NumLayouts; i++) {
-				if (strcmp(kb->layouts[i].name, s) == 0) {
-					fprintf(stderr, "Adding layer %s\n", s);
-					kb->layers[numlayers] = i;
+			for (i = 0; i < NumLayouts - 1; i++) {
+				if (kb->layouts[i].name && strcmp(kb->layouts[i].name, s) == 0) {
+					fprintf(stderr, "layer #%d = %s\n", numlayers + 1, s);
+					kb->layers[numlayers++] = i;
 					found = true;
 					break;
 				}
 			}
 			if (!found) {
-				fprintf(stderr, "Undefined layer: %s\n", s);
+				fprintf(stderr, "No such layer: %s\n", s);
 				exit(3);
 			}
-			numlayers++;
 			s = strtok(NULL,",");
 		}
-		kb->layers[numlayers] = NumLayouts;
+		kb->layers[numlayers] = NumLayouts; //mark the end of the sequence
 		if (numlayers == 0) {
 			fprintf(stderr, "No layers defined\n");
 			exit(3);
 		}
 	}
 
-	fprintf(stderr, "Initializing keyboard\n");
 	i = 0;
 	enum layout_id lid = kb->layers[0];
 	while (lid != NumLayouts) {
@@ -182,7 +187,7 @@ void kbd_init(struct kbd *kb, struct layout * layouts, char * layer_names_list) 
 	}
 	fprintf(stderr, "Found %d layers\n",i);
 
-	kb->layout = &kb->layouts[kb->layer_index];
+	kb->layout = &kb->layouts[kb->layers[kb->layer_index]];
 
 	/* upload keymap */
 	create_and_upload_keymap(kb->layout->keymap_name, 0, 0);
@@ -338,7 +343,7 @@ kbd_press_key(struct kbd *kb, struct key *k, uint32_t time) {
 		if (kb->layers[kb->layer_index] == NumLayouts) {
 			kb->layer_index = 0;
 		}
-		kbd_switch_layout(kb, &kb->layouts[kb->layer_index]);
+		kbd_switch_layout(kb, &kb->layouts[kb->layers[kb->layer_index]]);
 		break;
 	case BackLayer:
 		//switch to the previously active layout
