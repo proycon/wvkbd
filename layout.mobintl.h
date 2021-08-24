@@ -255,7 +255,7 @@ static struct key keys_full[] = {
   {",", "'", 1.0, Code, KEY_COMMA},
   {"", "", 4.0, Code, KEY_SPACE},
   {".", "?", 1.0, Code, KEY_DOT},
-  {"Entr", "Entr", 2.0, Code, KEY_ENTER, .scheme = 1},
+  {"Enter", "Enter", 2.0, Code, KEY_ENTER, .scheme = 1},
 
   /* end of layout */
   {"", "", 0.0, Last},
@@ -315,7 +315,7 @@ static struct key keys_special[] = {
   {",", "'", 1.0, Code, KEY_COMMA},
   {"", "", 4.0, Code, KEY_SPACE},
   {".", "?", 1.0, Code, KEY_DOT},
-  {"Entr", "Entr", 2.0, Code, KEY_ENTER, .scheme = 1},
+  {"Enter", "Enter", 2.0, Code, KEY_ENTER, .scheme = 1},
 
   /* end of layout */
   {"", "", 0.0, Last},
@@ -430,7 +430,7 @@ static struct key keys_cyrillic[] = {
   {",", "'", 1.0, Code, KEY_EQUAL},
   {"", "", 4.0, Code, KEY_SPACE},
   {".", "?", 1.0, Code, KEY_SLASH},
-  {"Entr", "Entr", 2.0, Code, KEY_ENTER, .scheme = 1},
+  {"Enter", "Enter", 2.0, Code, KEY_ENTER, .scheme = 1},
 
   /* end of layout */
   {"", "", 0.0, Last},

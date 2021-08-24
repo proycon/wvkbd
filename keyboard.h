@@ -408,7 +408,6 @@ void
 kbd_draw_key(struct kbd *kb, struct key *k, bool pressed) {
 	struct drwsurf *d = kb->surf;
 	const char *label = (kb->mods & Shift) ? k->shift_label : k->label;
-	fprintf(stderr, "Debug +%d+%d %dx%d\n", k->x, k->y, k->w, k->h),
 	fprintf(stderr, "Draw key +%d+%d %dx%d -> %s\n", k->x, k->y, k->w, k->h,
 	        label);
 	struct clr_scheme *scheme = (k->scheme == 0) ? &(kb->scheme) : &(kb->scheme1);
