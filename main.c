@@ -129,6 +129,8 @@ static const struct zwlr_layer_surface_v1_listener layer_surface_listener = {
   .closed = layer_surface_closed,
 };
 
+bool debug = false;
+
 /* configuration, allows nested code to access above variables */
 #ifndef LAYOUT
 #error "make sure to define LAYOUT"
@@ -356,6 +358,8 @@ main(int argc, char **argv) {
 				exit(1);
 			}
 			height = atoi(argv[++i]);
+		} else if (!strcmp(argv[i], "-D")) {
+			debug = true;
 		} else if (!strcmp(argv[i], "-o")) {
 			keyboard.print = true;
 		} else {
