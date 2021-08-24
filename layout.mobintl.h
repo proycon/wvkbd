@@ -58,7 +58,7 @@ enum layout_ids {
 };
 
 /* layers is an ordered list of layouts, used to cycle through */
-enum layout_ids layers[] = {
+static enum layout_ids layers[] = {
 	Full, //First layout is the default layout on startup
 	Special,
 	Simple,

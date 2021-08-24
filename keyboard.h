@@ -1,3 +1,5 @@
+#define MAX_LAYERS 25
+
 enum key_type;
 enum key_modifier_type;
 struct clr_scheme;
@@ -91,7 +93,7 @@ static inline void draw_inset(struct drwsurf *d, uint32_t x, uint32_t y,
                               uint32_t width, uint32_t height, uint32_t border,
                               uint32_t color);
 
-static void kbd_init(struct kbd *kb);
+static void kbd_init(struct kbd *kb, char * layer_names_list);
 static void kbd_init_layout(struct layout *l, uint32_t width, uint32_t height);
 static struct key *kbd_get_key(struct kbd *kb, uint32_t x, uint32_t y);
 static void kbd_unpress_key(struct kbd *kb, uint32_t time);
@@ -132,7 +134,45 @@ kbd_get_rows(struct layout *l) {
 }
 
 
-void kbd_init(struct kbd *kb) {
+void kbd_init(struct kbd *kb, char * layer_names_list) {
+	char *s;
+	int i;
+	bool found;
+
+	kb->layer_index = 0;
+
+	if (layer_names_list) {
+		uint8_t numlayers = 0;
+		kb->layers = malloc(MAX_LAYERS * sizeof(enum layout_ids));
+		s = strtok(layer_names_list, ",");
+		while (s != NULL) {
+			if (numlayers + 1 == MAX_LAYERS) {
+				fprintf(stderr, "too many layers specified");
+				exit(3);
+			}
+			found = false;
+			for (i = 0; i < NumLayouts; i++) {
+				if (strcmp(kb->layouts[i]->name, s) == 0) {
+					fprintf(stderr, "Adding layer %s\n", s);
+					kb->layers[numlayers] = i;
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				fprintf(stderr, "Undefined layer: %s\n", s);
+				exit(3);
+			}
+			numlayers++;
+			s = strtok(NULL,",");
+		}
+		kb->layers[numlayers] = NumLayouts;
+		if (numlayers == 0) {
+			fprintf(stderr, "No layers defined\n");
+			exit(3);
+		}
+	}
+
 	kb->layout = kb->layouts[kb->layer_index];
 
 	/* upload keymap */
@@ -351,7 +391,7 @@ kbd_print_key_stdout(struct kbd *kb, struct key *k) {
 	if (!handled) {
 		if ((kb->mods & Shift) || (kb->mods & CapsLock))
 			printf("%s", k->shift_label);
-		else if (!(kb->mods & Ctrl) && !(kb->mods & Alt) && (!kb->mods & Super))
+		else if (!(kb->mods & Ctrl) && !(kb->mods & Alt) && !(kb->mods & Super))
 			printf("%s", k->label);
 	}
 	fflush(stdout);
