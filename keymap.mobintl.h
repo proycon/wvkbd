@@ -1467,7 +1467,7 @@ xkb_symbols \"(unnamed)\" {\
 ",
 		        comp_unichr, comp_shift_unichr);
 		return keymap;
-	} else if (strcmp("name", "cyrillic")) {
+	} else if (strcmp(name, "cyrillic") == 0) {
 		sprintf(keymap, "xkb_keymap {\
 xkb_keycodes \"(unnamed)\" {\
         minimum = 8;\
@@ -2932,7 +2932,7 @@ xkb_symbols \"(unnamed)\" {\
 ",
 		        comp_unichr, comp_shift_unichr);
 		return keymap;
-	} else if (strcmp("name", "arabic")) {
+	} else if (strcmp(name, "arabic") == 0) {
 		sprintf(keymap, "xkb_keymap {\
 xkb_keycodes \"(unnamed)\" {\
         minimum = 8;\
@@ -4104,7 +4104,7 @@ xkb_symbols \"(unnamed)\" {\
         name[group1]=\"wvkbd arabic\";\
         key <ESC>  { [          Escape ] };\
 		key <TLDE> {  [     Arabic_thal,        Arabic_shadda,            Arabic_percent,               U0609 ]};\
-		key <AE01> {  [         Arabic_1,               exclam,                  1,            NoSymbol ]};\\
+		key <AE01> {  [         Arabic_1,               exclam,                  1,            NoSymbol ]};\
 		key <AE02> {  [         Arabic_2,                   at,                  2,            NoSymbol ]};\
 		key <AE03> {  [         Arabic_3,           numbersign,                  3,            NoSymbol ]};\
 		key <AE04> {  [         Arabic_4,               dollar,                  4,            NoSymbol ]};\
@@ -4121,7 +4121,7 @@ xkb_symbols \"(unnamed)\" {\
 		key <AD01> {  [      Arabic_dad,         Arabic_fatha,                  NoSymbol,               U2066 ]};\
 		key <AD02> {  [      Arabic_sad,      Arabic_fathatan,                  NoSymbol,               U2067 ]};\
 		key <AD03> {  [     Arabic_theh,         Arabic_damma,                  NoSymbol,               U2068 ]};\
-		key <AD04> {  [      Arabic_qaf,      Arabic_dammatan,                  NoSymbol,                  U2069 ]};\
+		key <AD04> {  [      Arabic_qaf,      Arabic_dammatan,                  NoSymbol,               U2069 ]};\
 		key <AD05> {  [      Arabic_feh,                UFEF9,                Arabic_veh,            NoSymbol ]};\
 		key <AD06> {  [    Arabic_ghain,       Arabic_hamzaunderalef,                  NoSymbol,        U202A ]};\
 		key <AD07> {  [      Arabic_ain,                grave,                  NoSymbol,               U202B ]};\
@@ -4393,7 +4393,7 @@ xkb_symbols \"(unnamed)\" {\
 };", comp_unichr, comp_shift_unichr);
 		return keymap;
 	} else {
-		fprintf(stderr, "No such keymap: %s", name);
+		fprintf(stderr, "No such keymap: '%s'", name);
 		exit(2);
 	}
 }
