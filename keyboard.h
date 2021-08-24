@@ -6,14 +6,17 @@ struct layout;
 struct kbd;
 
 enum key_type {
-	Pad = 0,
-	Code,
-	Mod,
-	Layout,
-	EndRow,
-	Last,
-	Compose,
-	Copy,
+	Pad = 0,    //Padding, not a pressable key
+	Code,       //A normal key emitting a keycode
+	Mod,        //A modifier key
+	Copy,       //Copy key, copies the unicode value specified in code (creates and activates temporary keymap)
+	            // used for keys that are not part of the keymap
+	Layout,     //Layout switch to a specific layout
+	PrevLayout, //Layout switch to the layout that was previously active
+	NextLayout, //Layout switch to the next layout in the layout sequence
+	Compose,    //Compose modifier key, switches to a specific associated layout upon next keypress
+	EndRow,     //Incidates the end of a key row
+	Last,       //Indicated the end of a layout
 };
 
 /* Modifiers passed to the virtual_keyboard protocol. They are based on
@@ -61,18 +64,23 @@ struct key {
 struct layout {
 	struct key *keys;
 	const char *keymap_name;
+	const char *name;
 	uint32_t keyheight; // absolute height (pixels)
 };
 
 struct kbd {
 	struct layout *layout;
-	struct layout *prevlayout;
 	struct clr_scheme scheme;
 	struct clr_scheme scheme1;
 
 	uint32_t w, h;
 	uint8_t mods;
 	struct key *last_press;
+	struct layout *prevlayout;
+	size_t layout_index;
+
+	enum layout_ids *layout_list;
+	struct layout **layouts;
 
 	struct drwsurf *surf;
 	struct zwp_virtual_keyboard_v1 *vkbd;
@@ -92,6 +100,20 @@ static void kbd_resize(struct kbd *kb, uint32_t w, uint32_t h,
                        struct layout *layouts, uint8_t layoutcount);
 static uint8_t kbd_get_rows(struct layout *l);
 static double kbd_get_row_length(struct key *k);
+static void kbd_switch_layout(struct kbd *kb, struct layout *l);
+
+void
+kbd_switch_layout(struct kbd *kb, struct layout *l) {
+	const struct layout * prevlayout = kb->prevlayout;
+	kb->prevlayout = kb->layout;
+	kb->layout = l;
+	if ((!prevlayout) ||
+		(strcmp(prevlayout->keymap_name, kb->layout->keymap_name) != 0)) {
+		fprintf(stderr, "Switching to keymap %s\n", kb->layout->keymap_name);
+		create_and_upload_keymap(kb->layout->keymap_name, 0, 0);
+	}
+	kbd_draw_layout(kb);
+}
 
 uint8_t
 kbd_get_rows(struct layout *l) {
@@ -246,15 +268,24 @@ kbd_press_key(struct kbd *kb, struct key *k, uint32_t time) {
 		kbd_draw_key(kb, k, (bool)compose);
 		break;
 	case Layout:
-		kb->layout = k->layout;
-		if ((!kb->prevlayout) ||
-		    (strcmp(kb->prevlayout->keymap_name, kb->layout->keymap_name) != 0)) {
-			fprintf(stderr, "Switching to keymap %s\n", kb->layout->keymap_name);
-			create_and_upload_keymap(kb->layout->keymap_name, 0, 0);
+		//switch to the layout determined by the key
+		kbd_switch_layout(kb, k->layout);
+		break;
+	case NextLayout:
+		//switch to the next layout in the sequence
+		kb->layout_index++;
+		if (kb->layout_list[kb->layout_index] == NumLayouts) {
+			kb->layout_index = 0;
 		}
-		kb->prevlayout = kb->layout;
-		kbd_draw_layout(kb);
+		kbd_switch_layout(kb, kb->layouts[kb->layout_index]);
+		break;
+	case PrevLayout:
+		//switch to the previously active layout
+		if (kb->prevlayout)
+			kbd_switch_layout(kb, kb->prevlayout);
+		break;
 	case Copy:
+		//copy code as unicode chr by setting a temporary keymap
 		kb->last_press = k;
 		kbd_draw_key(kb, k, true);
 		fprintf(stderr, "pressing copy key\n");

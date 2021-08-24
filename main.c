@@ -296,8 +296,37 @@ create_and_upload_keymap(const char *name, uint32_t comp_unichr,
 	free((void *)keymap_str);
 }
 
+void
+usage(char *argv0)
+{
+	fprintf(stderr, "usage: %s [-hov] [-H height] [-fn font] [-l layers] [-s initial_layer]\n", argv0);
+	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "  -D         - Enable debug\n");
+	fprintf(stderr, "  -o         - Print to standard output\n");
+	fprintf(stderr, "  -l         - Comma separated list of layers to enable\n");
+	fprintf(stderr, "  -s         - Layer to select on program start\n");
+	fprintf(stderr, "  -H [int]   - Height in pixels\n");
+	fprintf(stderr, "  -fn [font] - Set font (Xft, e.g: DejaVu Sans:bold:size=20)\n");
+}
+
 int
 main(int argc, char **argv) {
+	/* parse command line arguments */
+	int i;
+	for (i = 1; argv[i]; i++) {
+		if (!strcmp(argv[i], "-v")) {
+			printf("wvkbd-%s", VERSION);
+			exit(0);
+		} else if (!strcmp(argv[i], "-h")) {
+			usage(argv[0]);
+			exit(0);
+		} else {
+			fprintf(stderr, "Invalid argument: %s\n", argv[i]);
+			usage(argv[0]);
+			exit(1);
+		}
+	}
+
 	/* connect to compositor */
 	display = wl_display_connect(NULL);
 	if (display == NULL) {
