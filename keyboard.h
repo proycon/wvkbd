@@ -111,7 +111,7 @@ void
 kbd_switch_layout(struct kbd *kb, struct layout *l) {
 	kb->prevlayout = kb->layout;
 	kb->layout = l;
-	if (debug) fprintf(stderr, "Switching to layout %s)\n", kb->layout->name, kb->prevlayout->name);
+	if (debug) fprintf(stderr, "Switching to layout %s)\n", kb->layout->name);
 	if ((!kb->prevlayout) ||
 		(strcmp(kb->prevlayout->keymap_name, kb->layout->keymap_name) != 0)) {
 		fprintf(stderr, "Switching to keymap %s\n", kb->layout->keymap_name);
@@ -143,7 +143,6 @@ void kbd_init(struct kbd *kb, struct layout * layouts, char * layer_names_list) 
 
 	kb->layouts = layouts;
 
-	struct layout * l = layouts;
 	for (i = 0; i < NumLayouts - 1; i++);
 	fprintf(stderr, "Found %d layouts\n",i);
 
