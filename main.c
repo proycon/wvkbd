@@ -347,7 +347,7 @@ usage(char *argv0)
 	fprintf(stderr, "  -o         - Print press keys to standard output\n");
 	fprintf(stderr, "  -l         - Comma separated list of layers\n");
 	fprintf(stderr, "  -H [int]   - Height in pixels\n");
-	fprintf(stderr, "  -fn [font] - Set font (Xft, e.g: DejaVu Sans:bold:size=20)\n");
+	fprintf(stderr, "  -fn [font] - Set font (e.g: DejaVu Sans 20)\n");
 }
 
 int
