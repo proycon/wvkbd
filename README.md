@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/proycon/wvkbd/master/contrib/wvkbd-mobintl.jpg" width=300 /> <img src="https://raw.githubusercontent.com/proycon/wvkbd/master/contrib/wvkbd-mobintl-cyrillic.jpg" width=300 />
 
-This project aims to deliver a minimum implementation of a wlroots on-screen
+This project aims to deliver a minimal but practically usable implementation of a wlroots on-screen
 keyboard in legible C. This will **only** be a keyboard, not a feedback buzzer,
 led blinker, or anything that requires more than what's needed to input text
 quickly. The end product should be a static codebase that can be patched to add
