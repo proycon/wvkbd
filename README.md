@@ -1,6 +1,6 @@
 # wvkbd - On-screen keyboard for wlroots that sucks less
 
-<img src="https://raw.githubusercontent.com/proycon/wvkbd/master/contrib/wvkbd-mobintl.jpg" width=300 /> <img src="https://raw.githubusercontent.com/proycon/wvkbd/master/contrib/wvkbd-mobintl-cyrillic.jpg" width=300 />
+<img src="contrib/wvkbd-mobintl.jpg" width=300 /> <img src="contrib/wvkbd-mobintl-cyrillic.jpg" width=300 />
 
 This project aims to deliver a minimal but practically usable implementation of a wlroots on-screen
 keyboard in legible C. This will **only** be a keyboard, not a feedback buzzer,
@@ -17,7 +17,7 @@ new features.
  - Custom color schemes
  - Proper font drawing
  - Intuitive layouts
- - International layouts (cyrillic, arabic, persian, greek, georgian)
+ - International layouts (cyrillic, arabic, persian, greek, georgian, hebrew)
  - Support for 'Copy' keys which are not on the keymap
  - Emoji support
  - Compose key for character variants (e.g. diacritics)
@@ -25,7 +25,7 @@ new features.
  - Automatic portrait/landscape detection and subsequent layout switching
 
 
-<img src="https://raw.githubusercontent.com/proycon/wvkbd/master/contrib/wvkbd-mobintl-landscape.jpg" width=640 />
+<img src="contrib/wvkbd-mobintl-landscape.jpg" width=640 />
 
 There are some areas that still need work:
 
@@ -57,7 +57,11 @@ Run `wvkbd-mobintl` (or the binary for your custom layout set).
 
 You can switch between the layouts/layers of the keyboard by pressing the
 ⌨ key (little keyboard) the bottom-left (press shift to iterate back instead of
-forward). If you only want a subset of the available layers, you can define
+forward). If you press Cmp + ⌨  or Cmp + space you get an index showing all available layouts:
+
+<img src="contrib/wvkbd-mobintl-index.jpg" width=300 />
+
+If you only want a subset of the available layers, you can define
 which you want and in what order you want to cycle through them using the
 `-l` parameter (or `--landscape-layers` for landscape mode). This takes takes a ordered comma separated list of layout names
 that are defined in your layout set.
